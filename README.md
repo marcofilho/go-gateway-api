@@ -15,7 +15,7 @@
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/marcoantoniobarcelloslimafilho/go-api-payment-gateway.git
+    git clone https://github.com/marcofilho/go-gateway-api.git
     cd go-api-payment-gateway
     ```
 
