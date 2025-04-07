@@ -16,7 +16,7 @@
 1. Clone the repository:
     ```bash
     git clone https://github.com/marcofilho/go-gateway-api.git
-    cd go-api-payment-gateway
+    cd go-gateway-api
     ```
 
 2. Set up the environment variables for each service:
@@ -36,7 +36,7 @@
 ## Repository Structure
 
 ```plaintext
-/go-api-payment-gateway
+/go-gateway-api
 ├── frontend/       # Frontend code (Next.js)
 ├── gateway/        # Gateway code (Go)
 ├── antifraude/     # Anti-Fraud service code (Nest.js)
