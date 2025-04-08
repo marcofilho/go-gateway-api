@@ -20,7 +20,7 @@ func NewInvoiceService(invoiceRepository domain.InvoiceRepository, accountServic
 func (s *InvoiceService) CreateInvoice(input dto.CreateInvoiceDTO) (*dto.InvoiceOutputDTO, error) {
 	accountOutput, err := s.accountService.FindAccountByAPIKey(input.APIKey)
 	if err != nil {
-		return &dto.InvoiceOutputDTO{}, err
+		return nil, err
 	}
 
 	invoice, err := dto.ToInvoice(input, accountOutput.ID)

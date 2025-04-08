@@ -61,14 +61,14 @@ func NewInvoice(accountID, description, paymentType string, amount float64, cred
 }
 
 func (i *Invoice) Process() error {
-	if i.Amount > 10000.00 {
+	if i.Amount > 10000 {
 		return nil
 	}
 
 	randomSource := rand.New(rand.NewSource(time.Now().Unix()))
 	var newStatus Status
 
-	if randomSource.Float64() < 0.7 {
+	if randomSource.Float64() <= 0.7 {
 		newStatus = Approved
 	} else {
 		newStatus = Rejected

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/marcofilho/go-api-payment-gateway/internal/domain"
 	"github.com/marcofilho/go-api-payment-gateway/internal/dto"
 	"github.com/marcofilho/go-api-payment-gateway/internal/service"
@@ -21,7 +22,7 @@ func NewInvoiceHandler(invoiceService *service.InvoiceService, accountService *s
 	}
 }
 
-func (h *InvoiceHandler) CreateInvoice(w http.ResponseWriter, r *http.Request) {
+func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 	var input dto.CreateInvoiceDTO
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
@@ -42,26 +43,30 @@ func (h *InvoiceHandler) CreateInvoice(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(output)
 }
 
-func (h *InvoiceHandler) GetInvoiceByID(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Query().Get("id")
+func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
 	if id == "" {
 		http.Error(w, "ID is required", http.StatusBadRequest)
 		return
 	}
 
 	apiKey := r.Header.Get("X-API-KEY")
+	if apiKey == "" {
+		http.Error(w, "X-API-KEY is required", http.StatusBadRequest)
+		return
+	}
 
 	output, err := h.invoiceService.GetById(id, apiKey)
 	if err != nil {
 		switch err {
-		case domain.ErrorAccountNotFound:
-			http.Error(w, err.Error(), http.StatusNotFound)
-			return
 		case domain.ErrorInvoiceNotFound:
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
-		case domain.ErrorUnauthorizedAccess:
+		case domain.ErrorAccountNotFound:
 			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		case domain.ErrorUnauthorizedAccess:
+			http.Error(w, err.Error(), http.StatusForbidden)
 			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -70,7 +75,6 @@ func (h *InvoiceHandler) GetInvoiceByID(w http.ResponseWriter, r *http.Request) 
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(output)
 }
 

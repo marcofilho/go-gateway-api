@@ -42,8 +42,8 @@ func (s *Server) SetupRoutes() {
 
 	s.router.Group(func(r chi.Router) {
 		r.Use(authMiddleware.Authenticate)
-		s.router.Post("/invoice", invoiceHandler.CreateInvoice)
-		s.router.Get("/invoice/{id}", invoiceHandler.GetInvoiceByID)
+		s.router.Post("/invoice", invoiceHandler.Create)
+		s.router.Get("/invoice/{id}", invoiceHandler.GetByID)
 		s.router.Get("/invoice", invoiceHandler.GetInvoicesByAccountID)
 	})
 
