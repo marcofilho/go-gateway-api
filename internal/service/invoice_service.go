@@ -28,8 +28,8 @@ func (s *InvoiceService) CreateInvoice(input dto.CreateInvoiceDTO) (*dto.Invoice
 		return nil, err
 	}
 
-	if err := invoice.Process(); err != nil {
-		return nil, err
+	if err := invoice.Process(); err == nil {
+		return nil, domain.ErrorInvalidAmount
 	}
 
 	if invoice.Status == domain.Approved {
